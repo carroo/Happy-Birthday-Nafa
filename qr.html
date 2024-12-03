@@ -18,7 +18,7 @@
 
                 <!-- Video di atas balok, sedikit miring -->
                 <a-video id="ar-video" src="https://carroo.github.io/Happy-Birthday-Nafa/vidio.mp4" width="0.8"
-                    height="0.5" position="0 0.75 0.3" rotation="-20 0 0">
+                    height="0.5" position="0 0.75 0.3" rotation="-20 0 0" pause>
                 </a-video>
             </a-entity>
         </a-marker>
@@ -28,18 +28,11 @@
     </a-scene>
     <script>
         // Ambil elemen video
-        const video = document.querySelector('video');
+        const video = document.getElementById('ar-video');
         const marker = document.getElementById('marker-video');
 
-        // Nonaktifkan pemutaran otomatis
-        video.autoplay = false;
-        video.preload = 'none';
-
-        // Pastikan video di-pause saat halaman dimuat
-        window.addEventListener('load', () => {
-            video.pause();
-            video.currentTime = 0;
-        });
+        // Pause video saat halaman dimuat
+        video.pause();
 
         // Event listener saat marker terdeteksi
         marker.addEventListener('markerFound', function () {
@@ -49,7 +42,6 @@
         // Event listener saat marker hilang
         marker.addEventListener('markerLost', function () {
             video.pause();
-            video.currentTime = 0; // Reset ke awal
         });
     </script>
 </body>
