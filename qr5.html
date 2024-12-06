@@ -12,7 +12,9 @@
         <a-assets>
             <!-- Load GLB model -->
             <a-asset-item id="glbModel" src="https://carroo.github.io/Happy-Birthday-Nafa/gabung.glb"></a-asset-item>
-          </a-assets>
+            <video id="videoSrc" src="https://carroo.github.io/Happy-Birthday-Nafa/vidio.mp4" preload="auto" loop="true"
+            crossorigin="anonymous"></video>
+        </a-assets>
         <!-- Marker untuk menampilkan video -->
         <a-marker preset="hiro">
             <!-- GLB Model -->
@@ -23,9 +25,33 @@
               rotation="0 180 0">
             </a-entity>
           </a-marker>
+          <a-marker type="pattern" url="https://carroo.github.io/Happy-Birthday-Nafa/mafa.patt" id="marker">
+            <!-- Video yang akan dimainkan -->
+            <a-video id="video" src="#videoSrc" position="0 0 0" rotation="-90 0 0" width="4" height="2.25">
+            </a-video>
+        </a-marker>
 
         <!-- Kamera -->
         <a-entity camera></a-entity>
     </a-scene>
 </body>
+<script>
+    // Ambil elemen video
+    const videoElement = document.getElementById("videoSrc");
+    const marker = document.getElementById("marker");
+
+    // Event listener saat marker terlihat
+    marker.addEventListener("markerFound", () => {
+        if (videoElement.paused) {
+            videoElement.play();
+        }
+    });
+
+    // Event listener saat marker hilang
+    marker.addEventListener("markerLost", () => {
+        if (!videoElement.paused) {
+            videoElement.pause();
+        }
+    });
+</script>
 </html>
