@@ -1,63 +1,57 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AR.js Play Video</title>
+    <meta charset="utf-8">
+    <title>AR.js - Gambar dan Video</title>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ar.js/2.2.2/aframe-ar.min.js"></script>
 </head>
-
 <body style="margin: 0; overflow: hidden;">
     <a-scene embedded arjs="trackingMethod: best; debugUIEnabled: false;">
-        <!-- Marker yang akan discan -->
-
-
+        <!-- Marker untuk menampilkan gambar -->
         <a-assets>
+            <!-- Load GLB model -->
             <a-asset-item id="glbModel" src="https://carroo.github.io/Happy-Birthday-Nafa/gabung.glb"></a-asset-item>
             <video id="videoSrc" src="https://carroo.github.io/Happy-Birthday-Nafa/vidio.mp4" preload="auto" loop="true"
             crossorigin="anonymous"></video>
         </a-assets>
-
-        <a-marker type="pattern" url="https://carroo.github.io/Happy-Birthday-Nafa/mafa.patt" id="marker">
+        <!-- Marker untuk menampilkan video -->
+        <a-marker preset="hiro">
+            <!-- GLB Model -->
+            <a-entity
+              gltf-model="#glbModel"
+              scale="0.3 0.3 0.3"
+              position="-1 0 0"
+              rotation="0 180 0">
+            </a-entity>
+          </a-marker>
+          <a-marker type="pattern" url="https://carroo.github.io/Happy-Birthday-Nafa/mafa.patt" id="marker">
             <!-- Video yang akan dimainkan -->
             <a-video id="video" src="#videoSrc" position="0 0 0" rotation="-90 0 0" width="4" height="2.25">
             </a-video>
         </a-marker>
-        <a-marker preset="hiro">
-            <!-- GLB Model -->
-            <a-entity gltf-model="#glbModel" scale="0.3 0.3 0.3" position="0 0 0" rotation="0 180 0">
-            </a-entity>
-        </a-marker>
 
-
-        <!-- Camera -->
+        <!-- Kamera -->
         <a-entity camera></a-entity>
-
-        <!-- Video Source -->
-        
     </a-scene>
-
-    <script>
-        // Ambil elemen video
-        const videoElement = document.getElementById("videoSrc");
-        const marker = document.getElementById("marker");
-
-        // Event listener saat marker terlihat
-        marker.addEventListener("markerFound", () => {
-            if (videoElement.paused) {
-                videoElement.play();
-            }
-        });
-
-        // Event listener saat marker hilang
-        marker.addEventListener("markerLost", () => {
-            if (!videoElement.paused) {
-                videoElement.pause();
-            }
-        });
-    </script>
 </body>
+<script>
+    // Ambil elemen video
+    const videoElement = document.getElementById("videoSrc");
+    const marker = document.getElementById("marker");
 
+    // Event listener saat marker terlihat
+    marker.addEventListener("markerFound", () => {
+        if (videoElement.paused) {
+            videoElement.play();
+        }
+    });
+
+    // Event listener saat marker hilang
+    marker.addEventListener("markerLost", () => {
+        if (!videoElement.paused) {
+            videoElement.pause();
+        }
+    });
+</script>
 </html>
