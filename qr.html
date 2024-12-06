@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8">
     <title>AR.js - Gambar dan Video</title>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ar.js/2.2.2/aframe-ar.min.js"></script>
 </head>
+
 <body style="margin: 0; overflow: hidden;">
     <a-scene embedded arjs="trackingMethod: best; debugUIEnabled: false;">
         <!-- Marker untuk menampilkan gambar -->
@@ -13,21 +15,17 @@
             <!-- Load GLB model -->
             <a-asset-item id="glbModel" src="https://carroo.github.io/Happy-Birthday-Nafa/gabung.glb"></a-asset-item>
             <video id="videoSrc" src="https://carroo.github.io/Happy-Birthday-Nafa/vidio.mp4" preload="auto" loop="true"
-            crossorigin="anonymous"></video>
+                crossorigin="anonymous"></video>
         </a-assets>
         <!-- Marker untuk menampilkan video -->
         <a-marker preset="hiro">
             <!-- GLB Model -->
-            <a-entity
-              gltf-model="#glbModel"
-              scale="0.3 0.3 0.3"
-              position="0 0 0"
-              rotation="0 180 0">
+            <a-entity gltf-model="#glbModel" scale="0.3 0.3 0.3" position="0 0 0" rotation="0 180 0">
             </a-entity>
-          </a-marker>
-          <a-marker type="pattern" url="https://carroo.github.io/Happy-Birthday-Nafa/mafa.patt" id="marker">
+        </a-marker>
+        <a-marker type="pattern" url="https://carroo.github.io/Happy-Birthday-Nafa/mafa.patt" id="marker">
             <!-- Video yang akan dimainkan -->
-            <a-video id="video" src="#videoSrc" position="0 0 0" rotation="-90 0 0" width="4" height="2.25">
+            <a-video id="video" src="#videoSrc" position="0 1 0" rotation="-45 0 0" width="0.1" height="3">
             </a-video>
         </a-marker>
 
@@ -40,18 +38,50 @@
     const videoElement = document.getElementById("videoSrc");
     const marker = document.getElementById("marker");
 
+    const video = document.querySelector("#video");
+
+    // Variabel animasi
+    let width = 0.1;
+    const maxWidth = 5; // Lebar maksimal
+    const step = 0.05; // Langkah per frame
+    const interval = 50; // Waktu antar frame dalam ms
+    let intervalId = null; // Simpan ID interval
+
+    function resetRectangle() {
+        width = 0.1; // Reset ukuran
+        video.setAttribute('width', width); // Set ukuran awal
+    }
+
+    function animateRectangle() {
+        intervalId = setInterval(() => {
+            if (width >= maxWidth) {
+                clearInterval(intervalId); // Hentikan animasi jika lebar sudah maksimal
+                if (videoElement.paused) {
+                    videoElement.play();
+                }
+            } else {
+                width += step;
+                video.setAttribute('width', width); // Ubah lebar
+            }
+        }, interval);
+    }
+
+
     // Event listener saat marker terlihat
     marker.addEventListener("markerFound", () => {
-        if (videoElement.paused) {
-            videoElement.play();
-        }
+        resetRectangle(); // Reset ukuran persegi panjang
+        animateRectangle(); // Mulai animasi
     });
 
     // Event listener saat marker hilang
     marker.addEventListener("markerLost", () => {
+        clearInterval(intervalId); // Hentikan animasi jika marker hilang
+        resetRectangle(); // Reset ukuran untuk animasi berikutnya
         if (!videoElement.paused) {
             videoElement.pause();
+            videoElement.currentTime = 0;
         }
     });
 </script>
+
 </html>
