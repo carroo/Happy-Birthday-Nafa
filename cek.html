@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ar.js/2.2.2/aframe-ar.min.js"></script>
+    <title>AR.js Animated Rectangle</title>
+</head>
+
+<body style="margin: 0; overflow: hidden;">
+    <a-scene embedded arjs>
+        <a-assets>
+            <!-- Load GLB model -->
+            <video id="videoSrc" src="https://carroo.github.io/Happy-Birthday-Nafa/vidio.mp4" preload="auto" loop="true"
+                crossorigin="anonymous"></video>
+        </a-assets>
+        <!-- Marker -->
+        <a-marker preset="hiro">
+            <a-video id="video" src="#videoSrc" position="0 0 0" rotation="-90 0 0" width="0.1" height="2">
+            </a-video>
+        </a-marker>
+        <a-entity camera></a-entity>
+    </a-scene>
+    <script>
+
+        const videoElement = document.querySelector("#videoSrc");
+        const video = document.querySelector("#video");
+
+        // Variabel animasi
+        let width = 0.1;
+        const maxWidth = 3; // Lebar maksimal
+        const step = 0.05; // Langkah per frame
+        const interval = 50; // Waktu antar frame dalam ms
+        let intervalId = null; // Simpan ID interval
+
+        function resetRectangle() {
+            width = 0.1; // Reset ukuran
+            video.setAttribute('width', width); // Set ukuran awal
+        }
+
+        function animateRectangle() {
+            intervalId = setInterval(() => {
+                if (width >= maxWidth) {
+                    clearInterval(intervalId); // Hentikan animasi jika lebar sudah maksimal
+                    if (videoElement.paused) {
+                        videoElement.play();
+                    }
+                } else {
+                    width += step;
+                    video.setAttribute('width', width); // Ubah lebar
+                }
+            }, interval);
+        }
+
+        // Event marker ditemukan
+        document.querySelector('a-marker').addEventListener('markerFound', () => {
+            resetRectangle(); // Reset ukuran persegi panjang
+            animateRectangle(); // Mulai animasi
+
+        });
+
+        // Event marker hilang
+        document.querySelector('a-marker').addEventListener('markerLost', () => {
+            clearInterval(intervalId); // Hentikan animasi jika marker hilang
+            resetRectangle(); // Reset ukuran untuk animasi berikutnya
+            if (!videoElement.paused) {
+                videoElement.pause();
+                videoElement.currentTime = 0;
+            }
+        });
+
+    </script>
+</body>
+
+</html>
