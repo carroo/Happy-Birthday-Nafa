@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AR.js Play Video</title>
+  <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ar.js/2.2.2/aframe-ar.min.js"></script>
+</head>
+<body style="margin: 0; overflow: hidden;">
+  <a-scene embedded arjs>
+    <!-- Marker yang akan discan -->
+    <a-marker preset="hiro" id="marker">
+      <!-- Video yang akan dimainkan -->
+      <a-video
+        id="video"
+        src="#videoSrc"
+        position="0 0 0"
+        rotation="-90 0 0"
+        width="4"
+        height="2.25">
+      </a-video>
+    </a-marker>
+    
+    <!-- Camera -->
+    <a-entity camera></a-entity>
+
+    <!-- Video Source -->
+    <video id="videoSrc" src="https://carroo.github.io/Happy-Birthday-Nafa/vidio.mp4" preload="auto" loop="true" crossorigin="anonymous"></video>
+  </a-scene>
+
+  <script>
+    // Ambil elemen video
+    const videoElement = document.getElementById("videoSrc");
+    const marker = document.getElementById("marker");
+
+    // Event listener saat marker terlihat
+    marker.addEventListener("markerFound", () => {
+      if (videoElement.paused) {
+        videoElement.play();
+      }
+    });
+
+    // Event listener saat marker hilang
+    marker.addEventListener("markerLost", () => {
+      if (!videoElement.paused) {
+        videoElement.pause();
+      }
+    });
+  </script>
+</body>
+</html>
