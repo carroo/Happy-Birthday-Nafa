@@ -16,7 +16,8 @@
             <a-asset-item id="glbModel" src="https://carroo.github.io/Happy-Birthday-Nafa/gabung.glb"></a-asset-item>
             <video id="videoSrc" src="https://carroo.github.io/Happy-Birthday-Nafa/vidio.mp4" preload="auto" loop="true"
                 crossorigin="anonymous"></video>
-            <img id="balloon" src="https://carroo.github.io/Happy-Birthday-Nafa/mafa.jpg" preload="auto" loop="true" crossorigin="anonymous">
+            <img id="balloon" src="https://carroo.github.io/Happy-Birthday-Nafa/mafa.png" preload="auto" loop="true"
+                crossorigin="anonymous">
         </a-assets>
         <!-- Marker untuk menampilkan video -->
         <a-marker preset="hiro">
@@ -27,7 +28,7 @@
         <a-marker type="pattern" url="https://carroo.github.io/Happy-Birthday-Nafa/mafa.patt" id="marker">
             <!-- Video yang akan dimainkan -->
             <a-video id="video" src="#videoSrc" position="0 1 0" rotation="-45 0 0" width="0.1" height="3">
-                
+
             </a-video>
             <a-entity id="balloons-group"></a-entity>
         </a-marker>
@@ -88,9 +89,10 @@
 </script>
 <script>
     const balloonGroup = document.getElementById('balloons-group');
-    const numBalloons = 10; // Jumlah balon
-    const radius = 1; // Radius putaran balon
-    const height = 1.5; // Ketinggian balon
+    const numBalloons = 20; // Jumlah balon
+    const radius = 3; // Radius lingkaran balon
+    const videoPosition = { x: 0, y: 1, z: 0 }; // Posisi video
+    const videoRotation = -45; // Rotasi sumbu X pada video
 
     // Fungsi untuk membuat balon
     function createBalloon() {
@@ -101,29 +103,40 @@
         return balloon;
     }
 
-    // Tambahkan balon dan animasikan
+    // Tambahkan balon dan atur posisinya melingkar
     for (let i = 0; i < numBalloons; i++) {
         const balloon = createBalloon();
-        
-        // Tentukan posisi awal di lingkaran
+
+        // Tentukan sudut balon pada lingkaran horizontal
         const angle = (i / numBalloons) * 2 * Math.PI;
-        const x = radius * Math.cos(angle);
-        const z = radius * Math.sin(angle);
-        const y = Math.random() * height; // Posisi Y acak
-        
+        const x = videoPosition.x + radius * Math.cos(angle);
+        const z = videoPosition.z + radius * Math.sin(angle);
+        const y = videoPosition.y + Math.random() * 2; // Tinggi acak di sekitar video
+
+        // Posisi balon diatur relatif terhadap posisi dan rotasi video
         balloon.setAttribute('position', { x, y, z });
-        
-        // Animasi rotasi balon
-        balloon.setAttribute('animation', {
+
+        // Animasi rotasi balon mengelilingi video
+        balloon.setAttribute('animation__rotation', {
             property: 'rotation',
             to: `0 360 0`,
             loop: true,
-            dur: 5000, // 5 detik untuk satu putaran
+            dur: 5000, // 5 detik per putaran
+        });
+
+        // Animasi gerakan naik-turun balon
+        balloon.setAttribute('animation__float', {
+            property: 'position',
+            to: { x, y: y + 0.5, z },
+            dir: 'alternate',
+            loop: true,
+            dur: 2000, // 2 detik untuk satu gerakan naik-turun
         });
 
         // Tambahkan balon ke grup
         balloonGroup.appendChild(balloon);
     }
 </script>
+
 
 </html>
